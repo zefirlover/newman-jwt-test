@@ -11,8 +11,8 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v2
-    - name: start docker
-      run: docker build -t getting-started . && docker run -dp 3001:3001 getting-started
+#    - name: start docker
+ #     run: docker build -t getting-started . && docker run -dp 3001:3001 getting-started
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -21,6 +21,8 @@ jobs:
       # trying to install npm packages
     - run: npm i
 #    - run: npx playwright install --with-deps 
+    - name: run backend
+      run: node server.js
     - name: run test
       # trying to run tests
       run: newman run JWT.postman_collection.json
