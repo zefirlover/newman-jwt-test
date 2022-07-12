@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: start docker
-      run: docker-compose up
+      run: docker build -t getting-started . && docker run -dp 3001:3001 getting-started
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
