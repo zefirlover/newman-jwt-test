@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "fbed7817-7384-437f-921a-763db7d89a9a",
+		"name": "JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13231079"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"user\",\n\t\"password\": \"password\",\n\t\"extra\": \"tech\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"users"
+					]
+				},
+				"description": "The body must have `username`, `password` and `extra`. It returns `id_token` and `access_token` which are signed with the secret located at the `config.json` file. The `id_token` will contain the `username` and the `extra` information sent, while the `access_token` will contain the `audience`, `jti`, `issuer` and `scope`."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Session",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"user\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/sessions/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"sessions",
+						"create"
+					]
+				},
+				"description": "The body must have `username` and `password`. It returns `id_token` and `access_token` are signed with the secret located at the `config.json` file. The `id_token` will contain the `username` and the `extra` information sent, while the `access_token` will contain the `audience`, `jti`, `issuer` and `scope`."
+			},
+			"response": []
+		},
+		{
+			"name": "Unmodified Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: \"http://localhost:3001/sessions/create\",\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            {key: 'username', value: \"user\"},\r",
+							"            {key: 'password', value: \"password\"}\r",
+							"        ]\r",
+							"    }\r",
+							"},\r",
+							"    (err, res) => {\r",
+							"        // Set BEARERTOKEN\r",
+							"        pm.collectionVariables.set(\"BEARERTOKEN\", res.json().access_token)\r",
+							"        // console.log(res.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARERTOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6MTY1NzYyODI4NCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoibEVVenVyRmdHd3h3SnFSRCIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI0Njg0fQ.jH5etlwlTooL3pZ3vNh-0oTkMM7rHThArKrOlFclEYA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/api/protected/random-quote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"protected",
+						"random-quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0 exp date",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: \"http://localhost:3001/sessions/create\",\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            {key: 'username', value: \"user\"},\r",
+							"            {key: 'password', value: \"password\"}\r",
+							"        ]\r",
+							"    }\r",
+							"},\r",
+							"    (err, res) => {\r",
+							"        let token = res.json().access_token.split(\".\")\r",
+							"        // Set BEARERTOKEN\r",
+							"        pm.collectionVariables.set(\"BEARERTOKEN\", token[0] + \"eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6bnVsbCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoiUDNEWDVqQlBGa2huNGFMSiIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI4NTM4fQ.DjiBPPckJZx2mDflHzXLO5t4D7puNeeJLpxiTzQVm60\")\r",
+							"        // console.log(res.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARERTOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6bnVsbCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoibEVVenVyRmdHd3h3SnFSRCIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI0Njg0fQ.6921EbS726SkvlOSw80HI4EPkyHn5KDXO0-3CzmOCCM",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/api/protected/random-quote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"protected",
+						"random-quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0 exp date signed",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: \"http://localhost:3001/sessions/create\",\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            {key: 'username', value: \"user\"},\r",
+							"            {key: 'password', value: \"password\"}\r",
+							"        ]\r",
+							"    }\r",
+							"},\r",
+							"    (err, res) => {\r",
+							"        let token = res.json().access_token.split(\".\")\r",
+							"        // Set BEARERTOKEN\r",
+							"        pm.collectionVariables.set(\"BEARERTOKEN\", token[0] + \"eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6bnVsbCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoiUDNEWDVqQlBGa2huNGFMSiIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI4NTM4fQ\" + token[2])\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARERTOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6bnVsbCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoibEVVenVyRmdHd3h3SnFSRCIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI0Njg0fQ.jH5etlwlTooL3pZ3vNh-0oTkMM7rHThArKrOlFclEYA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/api/protected/random-quote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"protected",
+						"random-quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0 exp date algorithm change",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: \"http://localhost:3001/sessions/create\",\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json'\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"            {key: 'username', value: \"user\"},\r",
+							"            {key: 'password', value: \"password\"}\r",
+							"        ]\r",
+							"    }\r",
+							"},\r",
+							"    (err, res) => {\r",
+							"        // Set BEARERTOKEN\r",
+							"        pm.collectionVariables.set(\"BEARERTOKEN\", \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6MTY1NzYzMjEzOCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoiUDNEWDVqQlBGa2huNGFMSiIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI4NTM4fQ.gdj3v5sZOTiG9PPHmn4wOTYddfKOHXEWDUqKJXbXcAQ\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-length": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BEARERTOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6bnVsbCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoibEVVenVyRmdHd3h3SnFSRCIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI0Njg0fQ.jH5etlwlTooL3pZ3vNh-0oTkMM7rHThArKrOlFclEYA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/api/protected/random-quote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"protected",
+						"random-quote"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "BEARERTOKEN",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dvbnRvLmNvbSIsImF1ZCI6Im5vZGVqcy1qd3QtYXV0aCIsImV4cCI6MTY1NzYyODI4NCwic2NvcGUiOiJmdWxsX2FjY2VzcyIsInN1YiI6ImxhbGFsYW5kfGdvbnRvIiwianRpIjoibEVVenVyRmdHd3h3SnFSRCIsImFsZyI6IkhTMjU2IiwiaWF0IjoxNjU3NjI0Njg0fQ.jH5etlwlTooL3pZ3vNh-0oTkMM7rHThArKrOlFclEYA"
+		}
+	]
+}
