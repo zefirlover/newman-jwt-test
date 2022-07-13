@@ -5,6 +5,8 @@ on: [ push ]
 jobs:
   server-job:
     runs-on: ubuntu-20.04 # Choosing OS
+    container:
+      image: api
     strategy:
       matrix:
         node-version: [16.15.0]
@@ -25,20 +27,13 @@ jobs:
     - name: run backend
       run: node server.js
   newman-run:
-    runs-on: ubuntu-20.04 # Choosing OS
-    strategy:
-      matrix:
-        node-version: [16.15.0]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-    defaults:
-      run: 
+    runs-on: ubuntu-latest
+    container: 
+      image: postman/newman
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: run test
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run API Tests
       # trying to run tests
       run: newman run JWT.postman_collection.json
