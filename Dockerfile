@@ -1,9 +1,8 @@
-FROM newman_jwt_tests
+# Container image that runs your code
+FROM alpine:3.10
 
-# Setup you server
+# Copies your code file from your action repository to the filesystem path `/` of the container
+COPY server.js /server.js
 
-# This container exposes port 8080 to the outside world
-EXPOSE 3001
-
-# Run the executable
-CMD ["./main"]
+# Code file to execute when the docker container starts up (`entrypoint.sh`)
+ENTRYPOINT ["/server.js"]

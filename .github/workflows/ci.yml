@@ -6,7 +6,7 @@ jobs:
   server-job:
     runs-on: ubuntu-latest # Choosing OS
     container:
-      image: api
+      image: 'Dockerfile'
       
     steps:
     - uses: actions/checkout@v2
