@@ -3,16 +3,18 @@ name: ci
 on: [ push ]
 
 jobs:
-  Run_test:
+  server-job:
     runs-on: ubuntu-20.04 # Choosing OS
     strategy:
       matrix:
         node-version: [16.15.0]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    defaults:
+      run: 
     steps:
     - uses: actions/checkout@v2
 #    - name: start docker
- #     run: docker build -t getting-started . && docker run -dp 3001:3001 getting-started
+#      run: docker build -t getting-started . && docker run -dp 3001:3001 getting-started
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -20,9 +22,23 @@ jobs:
         cache: 'npm'
       # trying to install npm packages
     - run: npm i
-#    - run: npx playwright install --with-deps 
     - name: run backend
-      run: node server.js && newman run JWT.postman_collection.json
-#    - name: run test
+      run: node server.js
+  newman-run:
+    runs-on: ubuntu-20.04 # Choosing OS
+    strategy:
+      matrix:
+        node-version: [16.15.0]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    defaults:
+      run: 
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - name: run test
       # trying to run tests
-#      run: newman run JWT.postman_collection.json
+      run: newman run JWT.postman_collection.json
