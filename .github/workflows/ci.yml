@@ -22,7 +22,7 @@ jobs:
     - run: npm i
 #    - run: npx playwright install --with-deps 
     - name: run backend
-      run: node server.js
-    - name: run test
+      run: node server.js && newman run JWT.postman_collection.json
+#    - name: run test
       # trying to run tests
-      run: newman run JWT.postman_collection.json
+#      run: newman run JWT.postman_collection.json
