@@ -1,8 +1,19 @@
-# Container image that runs your code
-FROM alpine:3.10
+FROM node:12
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
-COPY . /server
+# создание директории приложения
+WORKDIR /usr/src/app
 
-# Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/server.js"]
+# установка зависимостей
+# символ астериск ("*") используется для того чтобы по возможности
+# скопировать оба файла: package.json и package-lock.json
+COPY package*.json ./
+
+RUN npm install
+# Если вы создаете сборку для продакшн
+# RUN npm ci --only=production
+
+# копируем исходный код
+COPY . .
+
+EXPOSE 8080
+CMD [ "node", "server.js" ]

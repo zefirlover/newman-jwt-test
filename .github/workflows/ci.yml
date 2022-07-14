@@ -5,21 +5,11 @@ on: [ push, pull_request ]
 jobs:
   server-job:
     runs-on: ubuntu-latest # Choosing OS
-#    container:
-#      image: 'dockerfile'
+    container:
+      image: zefirus/newman-jwt-test
       
     steps:
     - uses: actions/checkout@v2
-    - name: Set Docker Login
-      run: docker login --username zefirus --password 8f5a4e48-6673-4a50-80f2-a294287bbf83
-    - name: Build docker image
-      run: docker image build .
-    - name: Run image
-      run: docker build .
-  
-  container:
-    image: 'newman-jwt-test'
-  
     - name: Install Node
       uses: actions/setup-node@v2
       with: 
