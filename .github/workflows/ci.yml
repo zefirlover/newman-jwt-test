@@ -16,6 +16,9 @@ jobs:
         node-version: '16.x'
     - run: npm i
 
+    - name: install newman
+      run: npm i newman
+
     - name: run backend
       run: node server.js &
 
