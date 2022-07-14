@@ -7,30 +7,18 @@ jobs:
     runs-on: ubuntu-latest # Choosing OS
     container:
       image: zefirus/newman-jwt-test
-    
-    - name: Checkout
-      uses: actions/checkout@v2
       
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Install Node
-#      uses: actions/setup-node@v2
-#      with: 
-#        node-version: '16.x'
-#    - run: npm i
-
-#    - name: run backend
-#      run: node server.js
-
-  newman-run:
-    runs-on: ubuntu-latest
-    container: 
-      image: postman/newman
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Install Node
+      uses: actions/setup-node@v2
+      with: 
+        node-version: '16.x'
+    - run: npm i
 
-      - name: Run API Tests
-      # trying to run tests
-        run: newman run JWT.postman_collection.json
+    - name: run backend
+      run: node server.js &
+
+    - name: Run API Tests
+    # trying to run tests
+      run: newman run JWT.postman_collection.json
