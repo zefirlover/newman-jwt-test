@@ -6,19 +6,18 @@ jobs:
   server-job:
     runs-on: ubuntu-latest # Choosing OS
     container:
-    # image updated
       image: zefirus/newman-jwt-test
       
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install Node
-      uses: actions/setup-node@v2
-      with: 
-        node-version: '16.x'
-    - run: npm i
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Install Node
+#      uses: actions/setup-node@v2
+#      with: 
+#        node-version: '16.x'
+#    - run: npm i
 
-    - name: run backend
-      run: node server.js
+#    - name: run backend
+#      run: node server.js
 
   newman-run:
     runs-on: ubuntu-latest
