@@ -6,6 +6,7 @@ jobs:
   server-job:
     runs-on: ubuntu-latest # Choosing OS
     container:
+    # image updated
       image: zefirus/newman-jwt-test
       
     steps:
