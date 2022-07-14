@@ -10,12 +10,15 @@ jobs:
       
     steps:
     - uses: actions/checkout@v2
+    - name: Set Docker Login
+      run: docker login --username zefirus
+      run: 8f5a4e48-6673-4a50-80f2-a294287bbf83
     - name: Install Node
       uses: actions/setup-node@v2
       with: 
         node-version: '16.x'
-      
     - run: npm i
+
     - name: run backend
       run: node server.js
 
