@@ -16,8 +16,10 @@ jobs:
       run: docker image build .
     - name: Run image
       run: docker build .
-    container:
-      image: 'newman-jwt-test'
+  
+  container:
+    image: 'newman-jwt-test'
+  
     - name: Install Node
       uses: actions/setup-node@v2
       with: 
